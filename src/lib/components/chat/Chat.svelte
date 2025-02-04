@@ -117,7 +117,7 @@
 	let selectedToolIds = [];
 	let imageGenerationEnabled = false;
 	let codeInterpreterEnabled = false;
-	let webSearchEnabled = false;
+	let webSearchEnabled = localStorage.getItem('webSearchEnabled') !== 'false';
 
 	let chat = null;
 	let tags = [];
@@ -143,7 +143,7 @@
 			prompt = '';
 			files = [];
 			selectedToolIds = [];
-			webSearchEnabled = false;
+			webSearchEnabled = localStorage.getItem('webSearchEnabled') !== 'false';
 			imageGenerationEnabled = false;
 
 			if (chatIdProp && (await loadChat())) {
@@ -157,7 +157,7 @@
 						prompt = input.prompt;
 						files = input.files;
 						selectedToolIds = input.selectedToolIds;
-						webSearchEnabled = input.webSearchEnabled;
+						webSearchEnabled = input.webSearchEnabled ?? (localStorage.getItem('webSearchEnabled') !== 'false');
 						imageGenerationEnabled = input.imageGenerationEnabled;
 					} catch (e) {}
 				}
@@ -409,13 +409,13 @@
 				prompt = input.prompt;
 				files = input.files;
 				selectedToolIds = input.selectedToolIds;
-				webSearchEnabled = input.webSearchEnabled;
+				webSearchEnabled = input.webSearchEnabled ?? (localStorage.getItem('webSearchEnabled') !== 'false');
 				imageGenerationEnabled = input.imageGenerationEnabled;
 			} catch (e) {
 				prompt = '';
 				files = [];
 				selectedToolIds = [];
-				webSearchEnabled = false;
+				webSearchEnabled = localStorage.getItem('webSearchEnabled') !== 'false';
 				imageGenerationEnabled = false;
 			}
 		}

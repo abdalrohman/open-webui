@@ -169,6 +169,7 @@
 					class="flex w-full justify-between gap-2 items-center px-3 py-2 text-sm font-medium cursor-pointer rounded-xl"
 					on:click={() => {
 						webSearchEnabled = !webSearchEnabled;
+						localStorage.setItem('webSearchEnabled', webSearchEnabled.toString());
 					}}
 				>
 					<div class="flex-1 flex items-center gap-2">
