@@ -20,7 +20,7 @@ from open_webui.env import SRC_LOG_LEVELS
 
 # Configure logging
 logger = logging.getLogger("api_key_selection")
-logger.setLevel(SRC_LOG_LEVELS.get("API_KEY_SELECTION", logging.DEBUG))
+logger.setLevel(SRC_LOG_LEVELS.get("API_KEY_SELECTION", logging.INFO))
 
 
 def mask_api_key(key: str) -> str:
@@ -103,7 +103,7 @@ def select_api_key(
         and connection_id in _api_key_cache
         and now - _api_key_cache[connection_id]["timestamp"] < cache_ttl
     ):
-        logger.debug(f"Using cached API key selection for connection: {connection_id}")
+        logger.info(f"Using cached API key selection for connection: {connection_id}")
         return _select_key_from_cache(
             connection_id, keys, strategy, weights, validate_key
         )
@@ -155,7 +155,7 @@ def _select_key_from_cache(
         selected_key = keys[cache["last_used_index"]]
 
         # Log the selected key (masked) at debug level
-        logger.debug(
+        logger.info(
             f"Selected API key (Round-robin): {mask_api_key(selected_key)} for connection: {connection_id}"
         )
 
@@ -170,7 +170,7 @@ def _select_key_from_cache(
         # Update the last used timestamp
         cache["last_used"][selected_key] = time.time()
         # Log the selected key (masked) at debug level
-        logger.debug(
+        logger.info(
             f"Selected API key (LRU): {mask_api_key(selected_key)} for connection: {connection_id}"
         )
 
@@ -201,7 +201,7 @@ def _select_key_from_cache(
                     key_selected = True
 
                     # Log the selected key (masked) at debug level
-                    logger.debug(
+                    logger.info(
                         f"Selected API key (Weighted): {mask_api_key(selected_key)} for connection: {connection_id}"
                     )
                     break
@@ -211,7 +211,7 @@ def _select_key_from_cache(
                 selected_key = keys[0]
 
                 # Log the selected key (masked) at debug level
-                logger.debug(
+                logger.info(
                     f"Selected API key (Weighted fallback): {mask_api_key(selected_key)} for connection: {connection_id}"
                 )
         else:
@@ -220,7 +220,7 @@ def _select_key_from_cache(
             selected_key = keys[random_index]
 
             # Log the selected key (masked) at debug level
-            logger.debug(
+            logger.info(
                 f"Selected API key (Random fallback): {mask_api_key(selected_key)} for connection: {connection_id}"
             )
 
@@ -230,7 +230,7 @@ def _select_key_from_cache(
         selected_key = keys[random_index]
 
         # Log the selected key (masked) at debug level
-        logger.debug(
+        logger.info(
             f"Selected API key (Random): {mask_api_key(selected_key)} for connection: {connection_id}"
         )
 
@@ -240,7 +240,7 @@ def _select_key_from_cache(
         valid_key = next((key for key in keys if validate_key(key)), None)
         if valid_key:
             # Log the selected key (masked) at debug level
-            logger.debug(
+            logger.info(
                 f"Selected API key (Validation fallback): {mask_api_key(valid_key)} for connection: {connection_id}"
             )
             return valid_key
@@ -260,7 +260,7 @@ def clear_api_key_cache(connection_id: Optional[str] = None) -> None:
     if connection_id:
         if connection_id in _api_key_cache:
             del _api_key_cache[connection_id]
-            logger.debug(f"Cleared API key cache for connection: {connection_id}")
+            logger.info(f"Cleared API key cache for connection: {connection_id}")
     else:
         _api_key_cache = {}
-        logger.debug("Cleared all API key caches")
+        logger.info("Cleared all API key caches")
